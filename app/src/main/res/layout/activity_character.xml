@@ -20,15 +20,16 @@
         android:layout_margin="20dp"/>
 
     <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_round_filter"
         android:contentDescription="Filter"
         android:id="@+id/filter"
-        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/edittxt_search"
         android:background="@color/white"
         android:layout_below="@id/episode"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
         android:onClick="showMenu" />
 
 
@@ -55,13 +56,31 @@
         android:layout_marginLeft="20dp"
         android:text="Episode"/>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edittxt_search"
+        android:layout_below="@id/episode"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:hint="Search"
+        android:layout_marginLeft="20dp"
+        app:hintTextColor="@color/purple_200"
+        app:startIconDrawable="@drawable/ic_round_search"
+        app:startIconTint="@color/black">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
 
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
-        android:layout_below="@id/filter"
+        android:layout_below="@id/edittxt_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp" />

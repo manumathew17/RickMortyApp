@@ -10,21 +10,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.manu.mathew.rickandmorty.MainActivity;
 import com.manu.mathew.rickandmorty.R;
 import com.manu.mathew.rickandmorty.activity.CharacterActivity;
+import com.manu.mathew.rickandmorty.object.Character;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.ViewHolder> {
+    public ArrayList<Character> characterArrayList;
 
+    public CharacterAdapter(ArrayList<Character> characters) {
+        this.characterArrayList = characters;
+    }
 
     @NonNull
     @Override
@@ -43,50 +43,32 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
         CharacterActivity.queue = Volley.newRequestQueue(MainActivity.mContext);
 
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.charcterUrl.get(position), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.e("response", response.toString());
-                        try {
-                            holder.textView.setText(response.getString("name"));
-                            holder.txt_description.setText(response.getString("status"));
+        holder.textView.setText(characterArrayList.get(position).getName());
+        holder.txt_description.setText(characterArrayList.get(position).getStatus());
 
-                            holder.txt_gender.setText("Gender : " + response.getString("gender"));
-                            //holder.txt_created.setText("Created : " + response.get("created"));
+        holder.txt_gender.setText("Gender : " + characterArrayList.get(position).getGender());
+        //holder.txt_created.setText("Created : " + response.get("created"));
 
-                            try {
-                                Glide.with(holder.imageView.getContext())
-                                        .load(response.getString("image"))
-                                        .into(holder.imageView);
-                            } catch (Exception e) {
+        try {
+            Glide.with(holder.imageView.getContext())
+                    .load(characterArrayList.get(position).getImage())
+                    .into(holder.imageView);
+        } catch (Exception e) {
 
-                            }
+        }
 
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error", error.toString());
-
-            }
-        });
-
-        CharacterActivity.queue.add(jsonObjectRequest);
-        jsonObjectRequest.setTag(CharacterActivity.requestTAG);
 
     }
 
 
     @Override
     public int getItemCount() {
-        return MainActivity.charcterUrl.size();
+        return characterArrayList.size();
+    }
+
+    public void filterList(ArrayList<Character> filterdlist) {
+        this.characterArrayList = filterdlist;
+        this.notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

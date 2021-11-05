@@ -15,9 +15,9 @@ public class Character {
     public String image;
     //public List<String> episode;
     public String url;
-    public Date created;
+    public String created;
 
-    public Character(int id, String name, String status, String species, String type, String gender, String image, String url, Date created) {
+    public Character(int id, String name, String status, String species, String type, String gender, String image, String url, String created) {
         this.id = id;
         this.name = name;
         this.status = status;
@@ -61,7 +61,7 @@ public class Character {
         return url;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 }
