@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.manu.mathew.rickandmorty.MainActivity;
 import com.manu.mathew.rickandmorty.R;
 import com.manu.mathew.rickandmorty.activity.CharacterActivity;
+import com.manu.mathew.rickandmorty.activity.EpisodeActivity;
 import com.manu.mathew.rickandmorty.object.Episodes;
 
 import java.util.ArrayList;
@@ -79,7 +80,10 @@ public class EpisodeAdaptor extends RecyclerView.Adapter<EpisodeAdaptor.ViewHold
 
             MainActivity.charcterUrl.clear();
 
-            MainActivity.charcterUrl=episodesArrayList.get(getAdapterPosition()).characters;
+            MainActivity.charcterUrl.addAll(episodesArrayList.get(getAdapterPosition()).getCharacters());
+
+            CharacterActivity.episode=episodesArrayList.get(getAdapterPosition()).getName();
+
 
 
 
