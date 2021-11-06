@@ -1,5 +1,7 @@
 package com.manu.mathew.rickandmorty.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -93,6 +95,26 @@ public class CharacterActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("error", error.toString());
+
+
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(CharacterActivity.this);
+
+
+                    builder1.setTitle("Error");
+                    builder1.setMessage("Check your internet connection or " +error.toString());
+                    builder1.setCancelable(false);
+
+                    builder1.setPositiveButton(
+                            "close",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    finish();
+                                }
+                            });
+
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
 
                 }
             });

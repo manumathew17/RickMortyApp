@@ -1,12 +1,18 @@
 package com.manu.mathew.rickandmorty;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,9 +20,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
+import com.manu.mathew.rickandmorty.activity.CharacterActivity;
 import com.manu.mathew.rickandmorty.adapter.EpisodeAdaptor;
 import com.manu.mathew.rickandmorty.object.Episodes;
 
@@ -37,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
     TextInputLayout txt_filter;
     ArrayList<Episodes> filterdlist = new ArrayList<>();
     RequestQueue queue;
-    public static String url = "https://rickandmortyapi.com/api/episode";
+    public static String url = "https://rickandmortyapi.com/api/episode/";
+    int pagesize=0;
+    private ProgressBar loadingPB;
+    private NestedScrollView nestedSV;
 
 
     @Override
@@ -51,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
 
         charcterUrl = new ArrayList<>();
         txt_filter = (TextInputLayout) findViewById(R.id.edittxt_search);
+
+        loadingPB = findViewById(R.id.idPBLoading);
+        nestedSV = findViewById(R.id.idNestedSV);
 
         txt_filter.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -73,17 +87,126 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                // on scroll change we are checking when users scroll as bottom.
+                if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                    // in this method we are incrementing page number,
+                    // making progress bar visible and calling get data method.
+                    pagesize=pagesize+10;
+                    loadingPB.setVisibility(View.VISIBLE);
+                    loadEpisodes(pagesize);
+                }
+            }
+        });
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
+
+        loadEpisodes(pagesize+10);
+
+
+
+
+
+
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//
+//                        try {
+//                            JSONArray jsonArray = (JSONArray) response.get("results");
+//
+//                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                                List<String> characters = new ArrayList<>();
+//
+//                                for (int j = 0; j < jsonObject.getJSONArray("characters").length(); j++) {
+//                                    characters.add(jsonObject.getJSONArray("characters").getString(j));
+//                                }
+//
+//                                Episodes episodes = new Episodes(jsonObject.getInt("id"), jsonObject.getString("name"), jsonObject.getString("air_date"), jsonObject.getString("episode"), characters, jsonObject.getString("url"), jsonObject.getString("created").toString());
+//                                episodesArrayList.add(episodes);
+//
+//                            }
+//
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    episodesRecycler = (RecyclerView) findViewById(R.id.recyclerview);
+//                                    episodesRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+//                                    episodeAdaptor = new EpisodeAdaptor(episodesArrayList);
+//                                    episodesRecycler.setAdapter(episodeAdaptor);
+//                                }
+//                            });
+//
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+//
+//
+//                builder1.setTitle("Error");
+//                builder1.setMessage("Check your internet connection or " +error.toString());
+//                builder1.setCancelable(false);
+//
+//                builder1.setPositiveButton(
+//                        "close",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                dialog.cancel();
+//                                finish();
+//                            }
+//                        });
+//
+//                AlertDialog alert11 = builder1.create();
+//                alert11.show();
+//
+//            }
+//        });
+//
+//
+//        queue.add(jsonObjectRequest);
+
+
+    }
+
+    public void loadEpisodes(int size){
+
+        ArrayList<String> episodes=new ArrayList<>();
+
+        for(int i=size-10;i<=size;i++){
+            episodes.add(String.valueOf(i));
+        }
+
+
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url+episodes.toString(), null,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-
+                    public void onResponse(JSONArray response) {
+                        Log.e("resp",response.toString());
+                        loadingPB.setVisibility(View.GONE);
                         try {
-                            JSONArray jsonArray = (JSONArray) response.get("results");
+                            if(response.length()<=0){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(),"No more episodes to load",Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                return;
+                            }
 
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject jsonObject = response.getJSONObject(i);
                                 List<String> characters = new ArrayList<>();
 
                                 for (int j = 0; j < jsonObject.getJSONArray("characters").length(); j++) {
@@ -107,7 +230,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(),"Something went wrong ERROR 001",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
 
 
@@ -115,15 +243,30 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("error", error.toString());
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+
+
+                builder1.setTitle("Error");
+                builder1.setMessage("Check your internet connection or " +error.toString());
+                builder1.setCancelable(false);
+
+                builder1.setPositiveButton(
+                        "close",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                finish();
+                            }
+                        });
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
 
             }
         });
 
 
-        queue.add(jsonObjectRequest);
-
-
+        queue.add(jsonArrayRequest);
     }
 
 
@@ -133,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (Episodes items : this.episodesArrayList) {
 
-            if (items.name.toLowerCase().contains(text.toLowerCase())) {
+            if (items.name.toLowerCase().contains(text.toLowerCase()) || items.episode.toLowerCase().contains(text.toLowerCase())) {
 
 
                 filterdlist.add(items);

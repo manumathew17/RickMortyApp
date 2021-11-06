@@ -1,5 +1,6 @@
 package com.manu.mathew.rickandmorty.adapter;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,20 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
 
 
         holder.textView.setText(characterArrayList.get(position).getName());
-        holder.txt_description.setText(characterArrayList.get(position).getStatus());
+        String status = "none";
+        status = characterArrayList.get(position).getStatus();
+        if (status.toLowerCase().contains("alive")) {
+            holder.txt_description.setText(characterArrayList.get(position).getStatus() + " - " + characterArrayList.get(position).getSpecies());
+            holder.txt_description.getCompoundDrawablesRelative()[0].setTint(Color.GREEN);
+        } else if (status.toLowerCase().contains("dead")) {
+            holder.txt_description.setText(characterArrayList.get(position).getStatus() + " - " + characterArrayList.get(position).getSpecies());
+            holder.txt_description.getCompoundDrawablesRelative()[0].setTint(Color.RED);
+        }
+        else{
+            holder.txt_description.setText(characterArrayList.get(position).getStatus() + " - " + characterArrayList.get(position).getSpecies());
+            holder.txt_description.getCompoundDrawablesRelative()[0].setTint(Color.DKGRAY);
+        }
+
 
         holder.txt_gender.setText("Gender : " + characterArrayList.get(position).getGender());
         //holder.txt_created.setText("Created : " + response.get("created"));
