@@ -6,4 +6,4 @@ Used dependencies
 
 Download the app from apk folder debug version is available
 
-![Alt text](/relative/path/to/img.jpg?raw=true "Optional Title")
+![Alt text](https://github.com/manumathew17/RickMortyApp/blob/master/apk/Screenshot_20211107-000730_Rick%20and%20Morty.jpg?raw=true "Screen 1")
