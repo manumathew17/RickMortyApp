@@ -62,7 +62,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:hint="Search"
+        android:hint="Search by name"
         android:layout_marginLeft="20dp"
         app:hintTextColor="@color/purple_200"
         app:startIconDrawable="@drawable/ic_round_search"

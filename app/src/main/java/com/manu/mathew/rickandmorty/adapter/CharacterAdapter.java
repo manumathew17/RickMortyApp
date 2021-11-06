@@ -31,7 +31,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
     @Override
     public CharacterAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_episodes, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_character, parent, false);
         CharacterAdapter.ViewHolder evh = new CharacterAdapter.ViewHolder(view);
 
         return evh;

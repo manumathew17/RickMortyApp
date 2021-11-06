@@ -11,8 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RickAndMorty">
-        <activity android:name=".activity.CharacterActivity"></activity>
-        <activity android:name=".activity.EpisodeActivity" />
+        <activity android:name=".activity.CharacterActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

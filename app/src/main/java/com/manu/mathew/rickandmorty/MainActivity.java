@@ -21,10 +21,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
-import com.manu.mathew.rickandmorty.activity.CharacterActivity;
 import com.manu.mathew.rickandmorty.adapter.EpisodeAdaptor;
 import com.manu.mathew.rickandmorty.object.Episodes;
 
@@ -46,26 +44,28 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Episodes> filterdlist = new ArrayList<>();
     RequestQueue queue;
     public static String url = "https://rickandmortyapi.com/api/episode/";
-    int pagesize=0;
+    private int pagesize = 0;
     private ProgressBar loadingPB;
     private NestedScrollView nestedSV;
+    private static final String TAG_request="episodes";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = getApplicationContext();
 
+        mContext = getApplicationContext();
         queue = Volley.newRequestQueue(this);
         episodesArrayList = new ArrayList<>();
-
         charcterUrl = new ArrayList<>();
-        txt_filter = (TextInputLayout) findViewById(R.id.edittxt_search);
 
+
+        txt_filter = (TextInputLayout) findViewById(R.id.edittxt_search);
         loadingPB = findViewById(R.id.idPBLoading);
         nestedSV = findViewById(R.id.idNestedSV);
 
+        //for filtering
         txt_filter.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -79,22 +79,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
-
                 filter(s.toString());
-
-
             }
         });
 
+
+        //to load more
         nestedSV.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                // on scroll change we are checking when users scroll as bottom.
                 if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
-                    // in this method we are incrementing page number,
-                    // making progress bar visible and calling get data method.
-                    pagesize=pagesize+10;
+                    pagesize = pagesize + 10;
                     loadingPB.setVisibility(View.VISIBLE);
                     loadEpisodes(pagesize);
                 }
@@ -102,104 +97,36 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        loadEpisodes(pagesize+10);
+        loadEpisodes(pagesize + 10);
 
-
-
-
-
-
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//
-//                        try {
-//                            JSONArray jsonArray = (JSONArray) response.get("results");
-//
-//                            for (int i = 0; i < jsonArray.length(); i++) {
-//                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                                List<String> characters = new ArrayList<>();
-//
-//                                for (int j = 0; j < jsonObject.getJSONArray("characters").length(); j++) {
-//                                    characters.add(jsonObject.getJSONArray("characters").getString(j));
-//                                }
-//
-//                                Episodes episodes = new Episodes(jsonObject.getInt("id"), jsonObject.getString("name"), jsonObject.getString("air_date"), jsonObject.getString("episode"), characters, jsonObject.getString("url"), jsonObject.getString("created").toString());
-//                                episodesArrayList.add(episodes);
-//
-//                            }
-//
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    episodesRecycler = (RecyclerView) findViewById(R.id.recyclerview);
-//                                    episodesRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//                                    episodeAdaptor = new EpisodeAdaptor(episodesArrayList);
-//                                    episodesRecycler.setAdapter(episodeAdaptor);
-//                                }
-//                            });
-//
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-//
-//
-//                builder1.setTitle("Error");
-//                builder1.setMessage("Check your internet connection or " +error.toString());
-//                builder1.setCancelable(false);
-//
-//                builder1.setPositiveButton(
-//                        "close",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//                                dialog.cancel();
-//                                finish();
-//                            }
-//                        });
-//
-//                AlertDialog alert11 = builder1.create();
-//                alert11.show();
-//
-//            }
-//        });
-//
-//
-//        queue.add(jsonObjectRequest);
-
+        episodesRecycler = (RecyclerView) findViewById(R.id.recyclerview);
+        episodesRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        episodeAdaptor = new EpisodeAdaptor(episodesArrayList);
+        episodesRecycler.setAdapter(episodeAdaptor);
 
     }
 
-    public void loadEpisodes(int size){
+    public void loadEpisodes(int size) {
 
-        ArrayList<String> episodes=new ArrayList<>();
+        ArrayList<String> episodes = new ArrayList<>();
 
-        for(int i=size-10;i<=size;i++){
+        for (int i = size - 10; i <= size; i++) {
             episodes.add(String.valueOf(i));
         }
 
 
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url+episodes.toString(), null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + episodes.toString(), null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("resp",response.toString());
+                       // Log.e("resp", response.toString());
                         loadingPB.setVisibility(View.GONE);
                         try {
-                            if(response.length()<=0){
+                            if (response.length() <= 0) {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(getApplicationContext(),"No more episodes to load",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "No more episodes to load", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 return;
@@ -221,10 +148,8 @@ public class MainActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    episodesRecycler = (RecyclerView) findViewById(R.id.recyclerview);
-                                    episodesRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                                    episodeAdaptor = new EpisodeAdaptor(episodesArrayList);
-                                    episodesRecycler.setAdapter(episodeAdaptor);
+                                    //update recycler on response
+                                    episodeAdaptor.notifyDataSetChanged();
                                 }
                             });
 
@@ -233,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getApplicationContext(),"Something went wrong ERROR 001",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Something went wrong ERROR 001", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -244,12 +169,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-
-
                 builder1.setTitle("Error");
-                builder1.setMessage("Check your internet connection or " +error.toString());
+                builder1.setMessage("Check your internet connection or " + error.toString());
                 builder1.setCancelable(false);
-
                 builder1.setPositiveButton(
                         "close",
                         new DialogInterface.OnClickListener() {
@@ -265,13 +187,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        jsonArrayRequest.setTag(TAG_request);
         queue.add(jsonArrayRequest);
+
     }
 
 
     public void filter(String text) {
-
+        //filters episode and name
         filterdlist.clear();
 
         for (Episodes items : this.episodesArrayList) {
@@ -288,4 +211,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //cancel volley request
+        queue.cancelAll(TAG_request);
+
+    }
 }

@@ -7,5 +7,5 @@
     <item android:id="@+id/unknown"
         android:title="Unknown" />
     <item android:id="@+id/clear"
-        android:title="Clear" />
+        android:title="Clear all filter" />
 </menu>

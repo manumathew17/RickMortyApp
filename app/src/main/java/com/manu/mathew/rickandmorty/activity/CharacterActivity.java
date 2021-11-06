@@ -101,7 +101,7 @@ public class CharacterActivity extends AppCompatActivity {
 
 
                     builder1.setTitle("Error");
-                    builder1.setMessage("Check your internet connection or " +error.toString());
+                    builder1.setMessage("Check your internet connection or " + error.toString());
                     builder1.setCancelable(false);
 
                     builder1.setPositiveButton(
@@ -179,12 +179,13 @@ public class CharacterActivity extends AppCompatActivity {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                filterdlist.clear();
+
                 if (item.getItemId() == R.id.male) {
-                    filterdlist.clear();
 
                     for (Character items : characterArrayList) {
 
-                        if (items.getGender().toLowerCase().contains("male")) {
+                        if (items.gender.toLowerCase().equals("male")) {
 
 
                             filterdlist.add(items);
@@ -192,13 +193,12 @@ public class CharacterActivity extends AppCompatActivity {
                     }
 
                     characterAdapter.filterList(filterdlist);
-
                 } else if (item.getItemId() == R.id.female) {
-                    filterdlist.clear();
+
 
                     for (Character items : characterArrayList) {
 
-                        if (items.getGender().toLowerCase().contains("female")) {
+                        if (items.gender.toLowerCase().equals("female")) {
 
 
                             filterdlist.add(items);
@@ -206,14 +206,12 @@ public class CharacterActivity extends AppCompatActivity {
                     }
 
                     characterAdapter.filterList(filterdlist);
-
                 } else if (item.getItemId() == R.id.unknown) {
 
-                    filterdlist.clear();
 
                     for (Character items : characterArrayList) {
 
-                        if (items.getGender().toLowerCase().contains("unknown")) {
+                        if (items.gender.toLowerCase().contains("unknown")) {
 
 
                             filterdlist.add(items);
@@ -221,11 +219,12 @@ public class CharacterActivity extends AppCompatActivity {
                     }
 
                     characterAdapter.filterList(filterdlist);
-
                 } else {
 
                     characterAdapter.filterList(characterArrayList);
                 }
+
+
 
 
                 return true;

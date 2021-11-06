@@ -1,11 +1,9 @@
 package com.manu.mathew.rickandmorty.adapter;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.manu.mathew.rickandmorty.MainActivity;
 import com.manu.mathew.rickandmorty.R;
 import com.manu.mathew.rickandmorty.activity.CharacterActivity;
-import com.manu.mathew.rickandmorty.activity.EpisodeActivity;
 import com.manu.mathew.rickandmorty.object.Episodes;
 
 import java.util.ArrayList;
@@ -77,15 +74,12 @@ public class EpisodeAdaptor extends RecyclerView.Adapter<EpisodeAdaptor.ViewHold
 
         @Override
         public void onClick(View v) {
-
+            //call character activity
             MainActivity.charcterUrl.clear();
 
             MainActivity.charcterUrl.addAll(episodesArrayList.get(getAdapterPosition()).getCharacters());
 
             CharacterActivity.episode=episodesArrayList.get(getAdapterPosition()).getName();
-
-
-
 
             Intent intent = new Intent(MainActivity.mContext, CharacterActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
